@@ -15,7 +15,7 @@ import command.ListCommand;
 /**
  * This class manages the output of text.
  */
-public final class Printer {
+public class Printer {
 
     private static final String LINE = "----------------------------------------------------------------"
             + "----------------------------------------";
