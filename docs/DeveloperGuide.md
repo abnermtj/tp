@@ -202,6 +202,7 @@ This component handles interactions with the user. These interactions include pr
 ####  4.2.1.1 UserSession<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
 One of the classes is `UserSession` which contains the main loop of the program. Below is the class in UML.
+
 ![usersessionclass](https://i.ibb.co/C9s21vk/usersessionclass.png)
 Image 3: User Session class fields and methods 
 
