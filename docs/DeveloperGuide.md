@@ -497,11 +497,11 @@ This section describes some noteworthy details on how certain features are imple
 <a id="parsing-of-data-to-construct-commands"></a>
 ## 5.1. Parsing of Data to Construct Commands<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
-The command classes follow the command pattern. 
-During construction in Parser.parse() they get the information they need to execute from parsed data based on the user input. 
-Flags in the input are used to separate the different information. (e.g. `/add /n if /l python /k is nice`, has 3 flags, /n /l and /k and the String “python" is associated with the flag /l). 
-This information is stored in a HashMap where the descriptor (defined in ArgumentEnum) of the flag is the key and the information associated with it is the value.
-The command can execute at a random time later via commandObj.execute().12
+The current implmentation to construct commands begins with the user input, which is taken in by ` ui.getUserInput()`.  The `Parser` then parser this through `Parser.parse()` which will contruct the command based on the user input and provide the command which everything it needs to execute.
+
+Parser first derives the kind of command being executed, which is always the very first word typed. More important is how the  the parser parses the relevant flags. Each command has fields called  called `alternativeFlags` and `neccesaryFlags`. `alterntiveFlags` have an "at least one property" which means that at least one of these flags needs to be filled for the command to execute. `neccesaryFlags` require all of the flags need to be filled for the command to execute. Parser references these two fields two know if the flags inputted are required by the command itself. It also uses this information to know which flags are missing. These flags are then stored in a `LinkedHashMap<CommandFlag, String>` in the command itself where the flag itself is the key and the information associated with it is the value.
+
+The command can execute at a random time later via commandObj.execute().
 
 
 <a id="editing-feature"></a>
