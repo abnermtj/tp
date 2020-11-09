@@ -40,6 +40,8 @@ The table of contents below lets you easily access the documentation for install
    	    * [4.1.1.1. Adding a cheatsheet using the easy mode](#add-command-easy)
    	    * [4.1.1.2. Adding a cheatsheet using the advanced mode](#add-command-advanced)
 	  * [4.1.2. Deleting a cheatsheet: `/delete`](#delete-command)
+	    * [4.1.2.1. Deleting a cheatsheet using the easy mode](#delete-command-easy)
+            * [4.1.2.2. Deleting a cheatsheet using the advanced mode](delete-command-advanced)
 	  * [4.1.3. Clearing all entries: `/clear`](#clear-command)
   * [4.2.  Manipulation commands (Abner)](#manipulation-command-type)
 	  * [4.2.1. Editing a cheatsheet: `/edit` ](#edit-command)
@@ -252,14 +254,16 @@ From the previous subsection, we learned how to add a cheatsheet into CheatLogs.
 In this section, you will learn how to use the `/delete` function.
 
 You can use the delete command using two modes, **easy** and **advanced** mode.
-#### 4.1.2.1 Deleting a cheatsheet using easy mode
+<a id="delete-command-easy"></a>
+#### 4.1.2.1. Deleting a cheatsheet using the easy mode<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 The easy mode of the delete command lets you safely delete cheatsheets by prompting you the name and the index of the cheatsheet.
 > Format: `/delete`
 
 The prompts on the screen will request you to enter the name and the index of the cheatsheet; as shown in the picture bellow:
 ![image](https://i.ibb.co/12w4jCZ/delete-easy-mode.png)
 
-#### 4.1.2.2 Deleting a cheatsheet using advanced mode
+<a id="delete-command-advanced"></a>
+#### 4.1.2.2. Deleting a cheatsheet using the advanced mode<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 The advanced mode of the delete command lets you delete a cheatsheet using its index or its name. 
 The delete command will also be delete the corresponding cheatsheet from the */data* folder.
 
