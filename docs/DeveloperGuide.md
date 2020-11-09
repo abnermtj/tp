@@ -225,25 +225,21 @@ The `Ui` and `Printer` helper classes which provide an organized way to read and
 <a id="command-parser"></a>
 ### 4.2.2. Command Parser<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 //Brandon
-This component would parse the user input to produce useful information which would be used to construct a Command and executed the command. 
+This component would parse the user input to produce useful information which is used to construct a `Command`. 
 
-![](Images/Image6.PNG)
+The image belows shows the sequence for `Parser`.
 
-Image 4: Interaction between components to parse and execute command
+![Parser Sequence Diagram](https://i.ibb.co/wBJtHhq/Parser.png)
 
-![](Images/Image7.PNG)
+`userInput` is what the user types into the terminal when prompted.
 
-Image 5: Sequence Diagram from parsing input to command execution
-
-Image 4 and 5 illustrates the interactions between Parser, CommandExecutor and Command when a user inputs an instruction. 
-
-The steps below explain the sequence diagram:
-1. User input an instruction
-2. A new Parser object is created
-3. Parser#parse() is called to extract command type, name, programming language and details from the user-inputted instruction
-4. If the user input is valid, a new CommandExecutor object would be created
-5. CommandExecutor#execute() would be called to create a new Command object according to type of command user inputted
-6. Command#execute() would call other methods from CheatSheet and CheatSheetList to carry out specific instructions.
+These steps explain the sequence diagram for `Parser` and how `userInput` is dissected into different parts and constructed into a `Command`:
+1. When `Parser#parser(userInput)` is called, `Parser#parserCommandType(userInput)` is called immediately after. 
+2. `Parser#parserCommandType(userInput)` checks which type of command the user entered (`add`, `list`, etc.) and calls the creates a `Command` of that specified type.
+3. The `Command` created is assigned to variable named `commandToBeExecuted`
+4. `commandToBeExecuted` contains a hashmap, `flagsToDescription` with the type of flag (`/n`, `/i`, etc.) as key and flag description ("CheatSheet1", "1", etc.) as value. `Parser#ParserFlagDescription(commandToBeExecuted, userInput)` will split the userInput into the keys and value and populate `flagsToDescription`.
+5. `Parser#setMissingDescriptions(commandToBeExecuted` will be called to ensure all necessary keys in `flagsToDescription` have been filled. If it is not filled, the program will prompt the user and fill the value with what the user inputted.
+6. `commandToBeExecuted` with populated `flagsToDescription` will be returned.
 
 
 <a id="command"></a>
@@ -310,14 +306,69 @@ The sequence digaram bellow will demonstrate how it is executed.
 2. It will invoke the execute() method which will set the isExitCommand to true.
 
 <a id="list"></a>
-##### 4.2.3.6 List
+
+##### 4.2.3.5 List
+The `list` command lists all the cheatsheets in `cheatSheetList`.
+
+The image below shows the sequence diagram for `list` command.
+
+![ListCommand Sequence Diagram](https://i.ibb.co/sRLvDcx/List-Command.png)
+
+`cheatSheetList` is a `CheatSheetList` object that is passed to `ListCommand` when `ListCommand` is created.
+
+These steps explain the sequence diagram for `list` command and how `list` command works:
+
+1. When `ListCommand#execute()` is called, the `cheatSheetList` will be sorted by name via `SortByName` comparator.
+2. 
+    1. If `cheatSheetList` is empty, a CommandException will be thrown.
+    2. Else, a `TablePrinter` object will be created and `TablePrinter#execute()` prints `cheatSheetList` in a table format. Afterwards, a `SortFilter` object will be created and `SortFilter#execute()` to enter Sorting Mode. More details on Sorting Mode in [Section 5.3](#53-sorting-featurefont-size5-arrow_up_smalltable-of-contentsfont)
+
 
 <a id="find"></a>
-##### 4.2.3.7 Find
+##### 4.2.3.6 Find
+The `find` command searches through `cheatSheetList` to find matching cheatsheets.
+
+The image below shows the sequence diagram for `find` command.
+
+![FindCommand Sequence Diagram](https://i.ibb.co/gzNv26r/Find-Command.png)
+
+`cheatSheetList` is a `CheatSheetList` object that is passed to `FindCommand` when `FindCommand` is created.
+
+These steps explain the sequence diagram for `find` command and how `find` command works:
+
+1. When `FindCommand#execute()` is called, 
+    1. `FindCommand` object calls `flagToDescriptions.get(CommandFlag.NAME)` and assigns it to variable `name`
+    2. `FindCommand` object calls `flagToDescriptions.get(CommandFlag.SUBJECT)` and assigns it to variable `subject`
+    3. `FindCommand` object calls `flagToDescriptions.get(CommandFlag.SECTIONKEYWORD)` and assigns it to variable `keyword`
+2. A new `ArrayList<cheatSheet>` object is created and named `matchedContent`
+3. For every cheatsheet in cheatSheetList, if the cheatsheet corresponds to what the user inputted, the cheatsheet would be added to `matchedContent`
+4. 
+    5. If `matchedContent` is empty after the loop, it means no matching cheatsheet is found and Command Exception would be thrown
+    6. Else, 
+        1. new `TablePrinter` object would be created and `TablePrinter#execute()` would be called to print a table with all matching cheatsheets
+        2. new `SortFilter` object would be created and `SortFilter#execute()` would be called to enter Sorting Mode. More details on Sorting Mode in [Section 5.3](#53-sorting-featurefont-size5-arrow_up_smalltable-of-contentsfont)
 
 <a id="setting"></a>
-##### 4.2.3.8 Setting 
+##### 4.2.3.7 Setting 
+The `setting` command allows user to change color scheme and either turn off or on help messages for commands.
 
+The image below shows the sequence diagram for `settings` command.
+
+![SettingsCommand Sequence Diagram](https://i.ibb.co/Cvg3Cd2/Settings.png)
+
+These steps explain the sequence diagram for `find` command and how `find` command works:
+
+1. When `FindCommand#execute()` is called, 
+    1. `FindCommand` object calls `flagToDescriptions.get(CommandFlag.COLOUROPTION)` and assigns it to variable `colorOption`
+    2. `FindCommand` object calls `flagToDescriptions.get(CommandFlag.HELPMESSAGE)` and assigns it to variable `helpMessageOption`
+2. If user entered `/c` flag, it means the user wants to change the color scheme:
+    1. If `colorOption` is valid i.e. an integer within 1 -3, `Settings#setColor(colorOption, false)` will be called to set the color scheme to the choice the user chose. 
+    2. Else, a CommandException will be thrown.
+3. If user entered `/m` flag, it means the user wants to turn on/off the help messages. 
+    1. If `helpMessageOption` is `on`, `Settings#SetIsDisplayingHelpMessages(true, false)` will be called to turn on help messages.
+    2. If `helpMessageOption` is `off`, `Settings#SetIsDisplayingHelpMessages(false, false)` will be called to turn off help messages.
+    3. Else, a CommandException will be thrown
+    
 <a id="delete"></a>
 ##### 3.2.3.9 Delete
 Delete command removes one cheatsheet from the CheatSheetList and deletes the corresponding file in the */data* directory.
@@ -519,19 +570,24 @@ The text editor is instantiated when the edit command is invoked.
 ## 5.3. Sorting Feature<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
 This feature allows cheat sheets to be sorted in ascending or descending order according to the name or programming language of the cheat sheet.
+The class `sortFilter` uses `sort()` from `java.util. Collections` and `comparator` (`SortByName`, `SortByNameRev`, `SortBySubject`, `SortBySubjectRev`) to sort the cheatsheets according to the user choice.
 
+The image belows shows the sequence diagram for `sortFilter`.
 
-This feature is facilitated by ListCommand class. 
-It made use of Collections.sort along with sortByName and SortByLanguage which both implements Comparator<CheatSheet>. 
+![SortFilter Sequence Diagram](https://i.ibb.co/GvXHtYn/Sort-Filter.png)
 
+These steps explain the sequence diagram for `sortFilter` and how `sortFilter`works:
 
-Collections and Comparator forms the private method askForSortingConfigAndPrint(). 
-The inclusion of the method allows the user to choose the sorting option and the sorted cheat sheets will be printed.	
+1. When `SortFilter#execute()` is called, the program enters Sorting Mode and `SortFilter` object will keep repeating these steps until user entered characters that are not 1-4:
+    
+    1. `SortFilter` object calls `askForInput()` which will prompt the user to enter a character (1-4), and the cheatsheets will be sorted accordingly.
+        1. If the user entered a valid character, the `SortFilter` will use the corresponding `Comparator` and `sort()` to sort the cheatsheets
+        2. Else, a CommandException will be thrown and the user will exit from Sorting Mode.
+    
+    2. `TablePrinter` object will be created and `TablePrinter#execute()` will be called to display the cheatsheets in the specified order.
 
-
-Alternative: Using a for loop to sort by name and another loop that sorts by language
-Con: There would be many duplicate code and not good for reusability. 
-By using the sort() method present in java. util. Collections class, we would have better flexibility as the sort method could be reused with different functions just by including a new class that implements comparable.
+Another alternative to sort the cheatsheets by name or subject is by using a `for` loop for each sorting. However, there would be many duplicate code and not good for reusability. 
+By using the sort() method present in `java.util. Collections` class, we would have better flexibility as the sort method could be reused with different functions just by including a new class that implements `comparator`.
 
 
 <a id="data-management"></a>
@@ -866,7 +922,11 @@ versions of CheatLogs was designed to solve.
 
 <a id="non-functional-requirements"></a>
 ## 10.4 Non-Functional Requirements<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
-{Give non-functional requirements}
+* CheatLogs should be fast and responsive
+* CheatLogs should be reliable and have low rate of crashing
+* CheatLogs should be able to recover from any types of program failures
+* CheatLogs should protect the privacy of each user, a user can only access to his own data and not others
+* CheatLogs should ensure the integrity of the files. The files should not be easily accessible to every user 
 
 <br>
 
