@@ -15,6 +15,7 @@ The table of contents below lets you easily access the documentation for CheatLo
 >|--|--|
 >| :bulb: |Tip on current section  |
 >|:exclamation:|Warning of potential error|
+>|:memo:|Important details to note|
 >|<font size="3"> [:arrow_up_small:](#table-of-contents)</font>| Returns to table of contents on left click|
 >|**bold**|Key terms specific to CheatLogs|
 >|*italics*|Files|
@@ -33,7 +34,7 @@ The table of contents below lets you easily access the documentation for CheatLo
 * [4. Design](#design)
     * [4.1. Architecture](#architecture)
     * [4.2. Components](#components)
-        * [4.2.1. User Interface](#user-interface)
+         * [4.2.1. User Interface](#user-interface)
 	        * [4.2.1.1. UserSesssion](#user-sesh)
 	        * [4.2.1.2. Input](#in)
 	        * [4.2.1.3. Output](#out)
@@ -62,20 +63,28 @@ The table of contents below lets you easily access the documentation for CheatLo
     * [5.1. Parsing of Data to Construct Commands](#parsing-of-data-to-construct-commands)
     * [5.2. Editing Feature](#editing-feature)
     * [5.3. Sorting Feature](#sorting-feature)
-    * [5.4. Storage & Reading of Cheatsheet files](#data-storage)
+    * [5.4. Data Management](#data-management)
         * [5.4.1 Writing files](#file-writer)
         * [5.4.2 Reading files](#file-reader)
         * [5.4.3 Deleting files](#file-destroyer)
     * [5.5. Changing default settings](#settings-implementation)
-    * [5.6. \[Proposed\] Colour coding for code snippet](#colour-coding-for-code-snippet)
-* [6. Documentation, logging, testing, configuration, dev-ops](#documentation-logging-testing-configuration-dev-ops)
-* [7. Appendix: Requirements](#appendix-requirements)
-    * [7.1. Product scope](#product-scope-appendix)
-    * [7.2. User stories](#user-stories)
-    * [7.3. Use cases](#use-cases)
-    * [7.4. Non-Functional Requirements](#non-functional-requirements)
-* [8. Glossary](#glossary)
-* [9. Appendix: Instructions for manual testing](#appendix-instructions-for-manual-testing)
+    * [5.6. Colour coding for code snippet](#colour-coding-for-code-snippet)
+* [6. Appendix: Documentation](#appendix-documentation)
+* [7. Appendix: Logging](#appendix-logging)
+* [8. Appendix: Testing](#appendix-testing)
+    * [8.1 Executing tests](#appendix-executing-tests)
+    * [8.2 Types of tests](#appendix-types-of-tests)
+* [9. Appendix: Dev-ops](#appendix-dev-ops)
+    * [9.1 Build automation](#appendix-build-automation)
+    * [9.2 Making a new release](#appendix-new-release)
+* [10. Appendix: Requirements](#appendix-requirements)
+    * [10.1. Product scope](#product-scope-appendix)
+    * [10.2. User stories](#user-stories)
+    * [10.3. Use cases](#use-cases)
+    * [10.4. Non-Functional Requirements](#non-functional-requirements)
+* [11. Appendix: Instructions for manual testing](#appendix-instructions-for-manual-testing)
+* [12. Glossary](#glossary)
+
 <br>
 
 <a id="introduction"></a>
@@ -212,6 +221,7 @@ The `Ui` and `Printer` helper classes which provide an organized way to read and
  #### 4.2.1.3. Output<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
  The `ConsoleColorsEnum`, `Printer` and `TablePrinterClasses` are all used to control and centralize the output of **CheatLogs**.  They provide various helper methods to make the code of `Command` subclasses less verbose. In addition, `ConsoleColorsEnum` this class provides various ANSI escape characters that is used to format the colors of the output.
   
+
 <a id="command-parser"></a>
 ### 4.2.2. Command Parser<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 //Brandon
@@ -418,23 +428,37 @@ Here is the list of `Commands` that invokes a method call of CheatSheetList:
 
 <a id="data-storage"></a>
 ### 4.2.6. Data Storage<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
-//Theo
-This feature allows the application to read and update data in the form of text files. 
-Having an external source to store data will allow the application to be able to retrieve it when it is relaunched at another instance. 
+This feature allows the application to read and update data in the form of [XML files](https://www.tutorialspoint.com/xml/xml_documents.htm). 
+Having an external source to store data will allow the application to retrieve it when it is relaunched at another instance. 
 This prevents the user from having to repeatedly create new cheatsheets and update the application settings each time he opens up CheatLogs. 
 
-The following UML diagram illustrates the major interactions between the classes present in the 
+The following class UML diagram illustrates the major interactions between the classes present in the 
 *storage* package. 
 
-[!Image]()
+[!Image](https://i.ibb.co/tqsXqjb/storage-Uml.png)
 
-As we can see from the diagram above, the following 3 classes are subclasses of the *DataFile* class.
+As we can see from the diagram above, the following 3 classes are subclasses of the *DataFile* class, which is an abstract class.
 * *DataFileReader*
+  * This class is responsible for converting XML files present in your data directory into cheatsheets.
+  * Since it is a child of DataFile, it is capable of utilizing a common CheatSheetList node to store
+    created cheatsheets.  
+  * This class also reads your defined settings from the *settings.txt* file and writes it to the
+    settings class. This allows you to apply customization options to certain features of CheatLogs.
+  
 * *DataFileWriter*
+  * This class is responsible for converting your cheatsheets in CheatLogs into XML files.
+  * Based on the number of cheatsheets present in CheatSheetList, it will store that number of cheatsheets
+    in its class in the form of an arrayList. This is shown by the * multiplicity.
+    * This class also writes your defined settings to the *settings.txt* file by reading them from the
+      settings class. This allows you to store your preferences for certain features of CheatLogs.  
+    
 * *DataFileDestroyer*
+  * This class is responsible for deleting XML files corresponding to the relevant cheatsheet.
+  * Depending on the option stated by you, this feature can either delete a single file or all
+    XML files currently stored in the user directory.
 
 <a id="file-writer"></a>
-## 4.2.6.1 Writing files<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+## 4.2.6.1 Overview<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
 Whenever you give a command to *add* or *edit* a cheatsheet, this feature will be activated. Through this
 feature, CheatLogs will attempt to update all cheatsheet files, creating a new cheat sheet file if a new 
@@ -510,34 +534,103 @@ Con: There would be many duplicate code and not good for reusability.
 By using the sort() method present in java. util. Collections class, we would have better flexibility as the sort method could be reused with different functions just by including a new class that implements comparable.
 
 
-<a id="data-storage"></a>
-## 5.4. Data storage<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+<a id="data-management"></a>
+## 5.4. Data management<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
 This feature stores cheat sheets on the hard-drive in the form of XML file. 
-When the application loads subsequently, data from these files will be converted and loaded into the application.
+When the application loads, data from these files will be converted and loaded into the application.
 
 <a id="file-writer"></a>
 ### 5.4.1 Writing files<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
 Whenever you give a command to *add* or *edit* a cheatsheet, this feature will be activated. Through this
 feature, CheatLogs will attempt to update all cheatsheet files, creating a new cheat sheet file if a new 
-cheat sheet is created. To ensure that your cheat sheet files
+cheat sheet is created. To ensure the organization of your cheatsheet files, these files are created 
+in a subdirectory whose name matches the subject name of each cheatsheets. 
 
+The sequence diagram below illustrates the general process when writing files to the */data* directory.
+
+[!Image](https://i.ibb.co/k2ZPZTN/file-Writer.png)
+
+From the sequence diagram above, the *DataWriter* class invokes a number of methods when the
+*executeFunction* class is called. First, it obtains a list of all the cheatsheets present
+in CheatLogs from *CheatSheetList*. Next, it iterates through each cheatsheet, and stores
+them as XML files by invoking the *storeCheatSheet()* command. Finally, it will call its own *saveSettings()*
+command, where it will store the user-defined settings into *settings.txt*.
 
 <a id="file-reader"></a>
 ### 5.4.2 Reading files<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
-When CheatLogs is launched, it attempts to parse all XML files present in the /data directory and
-use it to create individual cheat sheets for each file. In the event that a particular XML file 
-cannot be read, it will be skipped to ensure that other files can be converted into cheat sheets.
+When CheatLogs is launched, this feature looks through the directories present in the /data directory
+recursively to find XML files that can be converted to cheatsheets. After verifying that the XML file has
+the relevant attributes and does not contain any non-alphanumeric characters, the Java DOM parser 
+converts these files into cheatsheets and adds them to the list.
 
+The sequence diagram below illustrates the general process when reading preloaded cheatsheets from CheatLogs.jar.
+
+[!Image](https://i.ibb.co/F36bKhr/preloaded-Extract.png)
+
+From the diagram above, when the *extractPreloadedCheatSheets()* method is called, *DataFileReader* calls a 
+few methods in order to execute this method. First, it creates a new JarFile object by calling its constructor,
+*JarFile*, with its parameter being CheatLogs.jar. Next, it iterates through
+each file present in this *JarFile*, looking out for XML files which are the preloaded cheatsheets. If such 
+a file is found, *createNewFile* method is called, which copies it over into the */data* directory to be
+parsed by CheatLogs. Finally, *DataFileReader* will close the JarFile with the close() command since
+it is not required anymore.
+
+The sequence diagram below illustrates the general process when reading files from the */data* directory. 
+
+[!Image](https://i.ibb.co/2shSvBS/file-Reader.png)
+
+As you can see in the diagram above, when the *executeFunction()* method is called, *DataFileReader* invokes
+a number of methods in order to complete this operation. First, it iterates through every directory
+present within the */data* directory, including itself. For each directory, a file object is constructed 
+from their respective paths, and a list of files within it is produced. For each file within this newly created
+list, 2 checks are done. If the file is an XML File, *DataFileReader* will attempt to create a new cheatsheet 
+out of it by invoking the method *createNewCheatSheet()*. However, if the file is the *settings.txt*, *DataFileReader*
+will now inoke *loadUserSettings()* to transfer the data stored within it to configure the respective settings
+of CheatLogs.
 
 <a id="file-destroyer"></a>
 ### 5.4.3 Deleting files<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
-When you decide to remove a cheat sheet, CheatLogs will delete the relevant cheat sheet files immediately. After this 
-operation, it will perform a search through the /data directory and delete any subdirectories without any cheat sheet.
-This ensures that your /data file is not cluttered with empty directories.
+When you decide to remove a cheat sheet, CheatLogs will delete the relevant cheat sheet files immediately.
+This is done by locating the path of the XML file corresponding to the cheat sheet. Subsequently, this feature
+will delete it provided that the XML file still exists. After deleting a file, this feature performs a recursive
+search through the data directory, to delete any directories that are empty after this operation. This ensures
+that there is no clutter of empty folders existing in the /data directory. 
+
+Currently, CheatLogs provides two options to remove XML files, which are listed below.
+
+1. Deleting a single file
+2. Clearing all files 
+
+> :memo: Regardless of the method chosen, *settings.txt* will still remain in your directory.
+
+The sequence diagram below illustrates the general process when deleting a single file.
+
+[!Image](https://i.ibb.co/JRj5F1n/destroyer-Single.png)
+
+As you can see in the diagram above, when the *executeFunction(String)* method is called, *DataFileDestroyer*
+self invokes 2 methods to implement this function. The first function is *deleteFile(String)*, where the XML file
+that matches the file name of the deleted cheatsheet is removed permanently from the directory. After that method,
+*updateDirectory(File)* is invoked as well. This method runs recursively, looking out for empty directories as well 
+as XML files who have been placed in the directory. They will be removed to maintain the organization of the files
+within the */data* folder.
+
+The sequence diagram below illustrates the general process when clearing all files.
+
+[!Image](https://i.ibb.co/58r7BcR/destroyer-Full.png)
+
+As you can see in the diagram above, when the *executeFunction()* method is called, *DataFileDestroyer*
+invokes a number of methods in order to complete this operation. First, it iterates through every
+directory present within the */data* directory, including itself. For each directory, a file object is constructed 
+from their respective paths a list of strings of each file within it is produced. Based on this secondary list of the names of
+files generated, *DataFileDestroyer* iterates through each of them and proceeds to delete the files which
+are identified as XML files. <br>
+Finally, *updateDirectory(File)* is also called. This method runs recursively, looking out for empty directories as well 
+as XML files who have been placed in the directory. They will be removed to maintain the organization of the files
+within the */data* folder.
 
 
 <a id="settings-implementation"></a>
@@ -584,25 +677,168 @@ Alternative 2: Save different sections of the cheat sheet using a different file
 
 <br>
 
-<a id="documentation-logging-testing-configuration-dev-ops"></a>
-# 6. Documentation, logging, testing, configuration, dev-ops<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+<a id="appendix-documentation"></a>
+# 6. Appendix: Documentation<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
+**Project Documentation**
+* This project uses **Jekyll**  to manage documentation and stores it into the */docs* folder
+
+> :bulb: Not sure how to manage this project documentation? Have a look at this [guide](https://se-education.org/guides/tutorials/jekyll.html)
+> to understand how **Jekyll** is used to maintain such documents.
+
+**Converting documents to PDF**
+
+This [guide](https://se-education.org/guides/tutorials/savingPdf.html) 
+will guide you through saving your documents in the form of PDF files.
+
+> :exclamation: Please use the recommended guide to save your files! Using other
+>methods to save your files can result in your PDF files being formatted in an undesirable
+>manner.
+
+**Style Guide**
+
+These guides will help you adhere to the style we have used to write the
+various documents of CheatLogs.
+
+* Google developer guide: [Guide](https://developers.google.com/style)
+* Java markdown standard: [Guide](https://se-education.org/guides/conventions/markdown.html)
+
+<br>
+
+<a id="appendix-logging"></a>
+# 7. Appendix: Logging<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+
+To log messages, we have utilized the [Logger](https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/Logger.html)
+object from the Java Library. This allows you to record messages 
+at certain segments of the execution of CheatLogs
+as well as note the severity of such a message. 
+These messages are exceptionally helpful when 
+attempting to debug important features on CheatLogs.
+
+
+<br>
+
+<a id="appendix-testing"></a>
+# 8. Appendix: Testing<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+
+This feature allows you to develop and run tests on any feature of CheatLogs. It is
+a valuable tool that helps you confirm that the developed features produces results
+that match your expectations.
+
+<a id="appendix-executing-tests"></a>
+## 8.1 Executing tests<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+
+There are two ways to run tests.
+
+1. Utilizing the test runner on IntelliJ
+    * Run all tests
+       1. Right-click on `src/test/java` folder
+       2. Select this option: `Run 'All Tests'`
+    * Run a subset of tests
+       1. Right-click on the relevant test class or package. This subset of tests will be referred to as TESTS.
+       2. Select this option: `Run TESTS`
+        
+
+2. Using Gradle
+    * Open a terminal and run the following command based on your Operating System.
+       * Windows: `gradlew clean test`
+       * Mac/Linux: `./gradlew clean test`
+
+> :bulb: Unfamiliar with navigating Gradle? Check out [this guide](https://se-education.org/guides/tutorials/gradle.html)
+> to understand how to use it.
+
+
+<a id="appendix-types-of-tests"></a>
+## 8.2 Types of tests<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+
+This project provides two types of tests:
+
+1. Unit tests 
+    * They test the lowest level methods within a class and look out for any abnormalities arising within them.
+    * e.g. `testGetSize()` in `CheatSheetListTest.java`
+2. Integration tests 
+    * They test the integration of multiple classes.
+    * e.g. `readFile_details_success()` in `DataFileReaderTest.java`
+
+<br>
+
+
+<a id="appendix-dev-ops"></a>
+# 9. Appendix: Dev-ops<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+
+This project uses various tools to build and maintain CheatLogs.
+Utilizing them helps you to develop CheatLogs more easily and effectively.
+
+
+<a id="appendix-build-automation"></a>
+## 9.1 Build automation<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+
+This project uses [Gradle](https://se-education.org/guides/tutorials/gradle.html)
+to automate builds and manage dependencies required for this project. 
+
+
+The following commands from Gradle are used to develop this project. You can
+execute this commands by launching a terminal and typing them based on the specified
+format.
+
+> :exclamation: If you are using Mac or Linux, add a `./` before entering any command!
+
+1. `checkstyleMain`
+    * Checks all code within the `src/main` directory of this project
+      for any issues regarding syntax and code quality.
+    > Format: `gradlew checkstyleMain`
+    
+2. `checkstyleTest`
+    * Checks all code within the `src/test` directory of this project
+      for any issues regarding syntax and code quality
+    > Format: `gradlew checkstyleTest`
+
+3. `clean`
+    * Clears all files created in the `build` directory of this project from 
+      previous build operations.
+
+    > Format: `gradlew clean`
+
+4. `run`
+    * Builds and runs the application
+
+    > Format: `gradlew run`
+
+5. `shadowJar`
+    * Uses the ShadowJar plugin to create a fat JAR file in the `build/lib` 
+    directory.
+
+    > Format: `gradlew shadowjar`
+                                                                                               
+    > :exclamation: This operation only replaces the JAR file if the current file is not present or outdated.
+                                
+
+<a id="appendix-new-release"></a>
+## 9.2 Making a Release<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+
+This project allows you to create multiple releases of CheatLogs. Follow these steps to create a new release.
+
+1. Generate a fat JAR file using [Gradle](https://se-education.org/guides/tutorials/gradle.html).
+   
+> :bulb: `gradlew shadowjar` should help you with this step.
+
+2. Create a new release on [Github](https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/managing-releases-in-a-repository). 
+> :memo: Upload the JAR file you just created when prompted.
 
 <br>
 
 <a id="appendix-requirements"></a>
-# 7. Appendix: Requirements<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
-
+# 10. Appendix: Requirements<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
 <br>
 
 <a id="product-scope-appendix"></a>
-## 7.1 Product scope<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+## 10.1 Product scope<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
 
 
 <a id="user-stories"></a>
-## 7.2 User stories<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+## 10.2 User stories<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 The table below describes the particular needs of relevant users that the respective
 versions of CheatLogs was designed to solve.
 
@@ -624,20 +860,33 @@ versions of CheatLogs was designed to solve.
 
 
 <a id="use-cases"></a>
-## 7.3 Use cases<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+## 10.3 Use cases<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
 
 
 <a id="non-functional-requirements"></a>
-## 7.4 Non-Functional Requirements<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+## 10.4 Non-Functional Requirements<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 {Give non-functional requirements}
-
-
-<a id="glossary"></a>
-# 8. Glossary<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
-* *glossary item* - Definition
 
 <br>
 
 <a id="appendix-instructions-for-manual-testing"></a>
-# 9. Appendix: Instructions for manual testing<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+# 11. Appendix: Instructions for manual testing<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+
+{Give instructions on how to do a manual product testing e.g., how to load sample data to be used for testing}
+
+<!---
+There are few major components inside the code, and those components are broken down into separate classes. 
+All components can be accessed from the CheatLogs class.
+### CheatSheetList
+All cheatsheets are stored inside a static class CheatSheetList to allow other classes to easily access and write data to the list.
+-->
+
+<br>
+
+<a id="glossary"></a>
+# 12. Glossary<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+* *glossary item* - Definition
+
+<br>
+
