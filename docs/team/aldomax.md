@@ -78,12 +78,14 @@ ___
     * **Section 3** which covers the Graphical User Interface (GUI) and the commands associated with the text editor
     * **Section 4.1** which covers all the storage commands of CheatLogs.
 * Developer Guide
-    For the developer guide, I am responsibe for the following sections:
+    For the developer guide, I am responsible for the following sections:
     
-    * **Section 4.2.3.2** which coveres the AddCommand description and the sequence diagram
-    * **Section 4.2.3.3** which coveres the EditCommand description and the sequence diagram
-    * **Section 4.2.3.4** which coveres the ViewCommand description and the sequence diagram
-    * **Section 4.2.3.5** which coveres the ExitCommand description and the sequence diagram
+    * **Section 4.2.3.2** which covers the AddCommand description and the sequence diagram
+    * **Section 4.2.3.3** which covers the EditCommand description and the sequence diagram
+    * **Section 4.2.3.4** which covers the ViewCommand description and the sequence diagram
+    * **Section 4.2.3.5** which covers the ExitCommand description and the sequence diagram
+    * **Section 5.2** which covers the content editor
+    * **Section 10.3** which covers the use cases
 ___
 #### Review/Mentoring Contributions
 * I helped the team with repository maintenance, mostly about git (Pull Requests, Branches, Merge Conflicts, Rebasing, etc).
@@ -94,4 +96,10 @@ Here are the pull requests I helped review and merged:
 - [#22](https://github.com/AY2021S1-CS2113T-W11-3/tp/pull/22/)
 - [#19](https://github.com/AY2021S1-CS2113T-W11-3/tp/pull/19)
 - [#109](https://github.com/AY2021S1-CS2113T-W11-3/tp/pull/108)
+
+Here are the issues that I raised
+-[220](https://github.com/AY2021S1-CS2113T-W11-3/tp/issues/220)
+-[218](https://github.com/AY2021S1-CS2113T-W11-3/tp/issues/218)
+-[149](https://github.com/AY2021S1-CS2113T-W11-3/tp/issues/149)
+-[147](https://github.com/AY2021S1-CS2113T-W11-3/tp/issues/147)
 ___

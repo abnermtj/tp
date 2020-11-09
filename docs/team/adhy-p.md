@@ -49,10 +49,11 @@ I contributed to **section 4.2.3.1** and **section 4.2.3.10 - 4.2.3.12**:
 - FavouriteCommand
 - HelpCommand
 
-I also contributed to **section 5.5 - 5.6** and **section 10.2**:
+I also contributed to **section 5.5 - 5.6**, **section 10.2**, and **section 11**:
 - Changing default settings
 - Proposed color coding implementation
 - User stories
+- Instructions for manual testing
 
 ---
 ### Contribution to team-based tasks

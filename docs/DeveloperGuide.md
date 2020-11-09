@@ -31,7 +31,7 @@ The table of contents below lets you easily access the documentation for CheatLo
 * [3. Setting Up, Getting Started](#setting-up-getting-started)
     * [3.1. Prerequisites](#prerequisites)
     * [3.2. Running the Project](#running-the-project)
-    * [3.3 Importing into IntelliJ \[optional\]](#importing-into-intellij)
+    * [3.3 Importing into IntelliJ \[optional\]](#importing-to-intellij)
 * [4. Design](#design)
     * [4.1. Architecture](#architecture)
     * [4.2. Components](#components)
@@ -56,18 +56,17 @@ The table of contents below lets you easily access the documentation for CheatLo
         * [4.2.4. Cheat Sheet Structure](#cheat-sheet-structure)
         * [4.2.5. Cheat Sheet Management](#cheat-sheet-management)
         * [4.2.6. Data Storage](#data-storage)
-            * [4.2.6.1 Overview](#overview-design)
-            * [4.2.6.2 Writing files](#file-writer-design)
-            * [4.2.6.3 Reading files](#file-reader-design)
-            * [4.2.6.4 Deleting files](#file-destroyer-design)
+            * [4.2.6.1 Writing files](#file-writer-design)
+            * [4.2.6.2 Reading files](#file-reader-design)
+            * [4.2.6.3 Deleting files](#file-destroyer-design)
 * [5. Implementation](#implementation)
     * [5.1. Parsing of Data to Construct Commands](#parsing-of-data-to-construct-commands)
     * [5.2. Editing Feature](#editing-feature)
     * [5.3. Sorting Feature](#sorting-feature)
     * [5.4. Data Management](#data-management)
-        * [5.4.1 Writing files](#file-writer)
-        * [5.4.2 Reading files](#file-reader)
-        * [5.4.3 Deleting files](#file-destroyer)
+        * [5.4.1 Writing files](#impln-file-writer)
+        * [5.4.2 Reading files](#impln-file-reader)
+        * [5.4.3 Deleting files](#impln-file-destroyer)
     * [5.5. Changing default settings](#settings-implementation)
     * [5.6. Colour coding for code snippet](#colour-coding-for-code-snippet)
 * [6. Appendix: Documentation](#appendix-documentation)
@@ -84,6 +83,14 @@ The table of contents below lets you easily access the documentation for CheatLo
     * [10.3. Use cases](#use-cases)
     * [10.4. Non-Functional Requirements](#non-functional-requirements)
 * [11. Appendix: Instructions for manual testing](#appendix-instructions-for-manual-testing)
+    * [11.1. Start-up with preloaded data and restart with save data](#manual-test-1)
+    * [11.2. Adding cheatsheets](#manual-test-2)
+    * [11.3. Editing cheatsheets](#manual-test-3)
+    * [11.4. Viewing cheatsheets](#manual-test-4)
+    * [11.5. Finding cheatsheets](#manual-test-5)
+    * [11.6. Deleting cheatsheets](#manual-test-6)
+    * [11.7. Clearing cheatsheets](#manual-test-7)
+    * [11.8. Add/remove cheatsheets to favourites](#manual-test-8)
 * [12. Glossary](#glossary)
 
 <br>
@@ -110,7 +117,6 @@ This document specifies the high-level architecture and software design decision
 
 <a id="setting-up-getting-started"></a>
 # 3. Setting Up, Getting Started<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
-xx
 
 
 <a id="prerequisites"></a>
@@ -256,7 +262,7 @@ Below is the class diagram for the command package.
 `FinderCommand` provides the capability to search for the desired cheatsheet using the `getCheatSheetFromNameOrIndex()` method. Upon method calls, the sub-class of `FinderCommand` will first call this method to get the desired cheatsheet, then it proceeds to process this cheatsheet object based on its own functionality. A sequence diagram will be given for each commands to better illustrate the interaction between this class with its sub-classes.
 
 <a id="add"></a>
-##### 4.2.3.1 Add
+##### 4.2.3.2 Add
 The AddCommand is used to add cheatsheets into CheatLogs.
 The picture bellow shows how the AddCommand is executed.
 ![AddCommand Sequence Diagram](https://i.ibb.co/GtFKP7V/Add-Command-4.png)
@@ -271,7 +277,7 @@ The picture bellow shows how the AddCommand is executed.
 9. Finally, once the cheatSheet has been added into the cheatSheetList, the AddCommand will invoke the `printAddNewCheatSheetMessage(cheatSheet,cheatSheetList)` to print the confirmation message.
 
 <a id="edit"></a>
-##### 4.2.3.2 Edit
+##### 4.2.3.3 Edit
 The edit command allows the user to edit the content of the CheatSheet object.
 The image bellow is how the EditCommand is executed.
 ![EditCommand Sequence Diagram](https://i.ibb.co/tPg1pjL/Edit-Command-4.png)
@@ -287,7 +293,7 @@ The image bellow is how the EditCommand is executed.
 10. To reflect the change, the EditCommand object will invoke `cheatsheet.setDetail(editor.getContent())` method to get the content of the cheatsheet and also change the content of the cheatsheet.
 
 <a id="view"></a>
-##### 4.2.3.3 View
+##### 4.2.3.4 View
 The view command is used to view the content of the cheatsheet in tht command line interface.
 The sequence diagram bellow demonstrates how tht view command is executed.
 ![ViewCommand_Sequence_Diagram](https://i.ibb.co/GF4LZYy/View-Command-3.png)
@@ -299,7 +305,7 @@ The sequence diagram bellow demonstrates how tht view command is executed.
 6. Afterwards, it will call the `printViewCheatSheetMessage` of the printer class to print the cheatsheet into the command line.
 
 <a id="exit"></a>
-##### 4.2.3.4 Exit
+##### 4.2.3.5 Exit
 The exit command is used to exit the CheatLogs program.
 The sequence digaram bellow will demonstrate how it is executed.
 ![ExitCommand_Sequence-Diagram](https://i.ibb.co/4SxcnL5/Exit-Command-1.png)
@@ -371,7 +377,7 @@ These steps explain the sequence diagram for `find` command and how `find` comma
     3. Else, a CommandException will be thrown
     
 <a id="delete"></a>
-##### 3.2.3.9 Delete
+##### 4.2.3.9 Delete
 Delete command removes one cheatsheet from the CheatSheetList and deletes the corresponding file in the */data* directory.
 
 Here is an example of the usage of `/delete` command and how it works:
@@ -487,7 +493,7 @@ This prevents the user from having to repeatedly create new cheatsheets and upda
 The following class UML diagram illustrates the major interactions between the classes present in the 
 *storage* package. 
 
-[!Image](https://i.ibb.co/tqsXqjb/storage-Uml.png)
+![!Image](https://i.ibb.co/tqsXqjb/storage-Uml.png)
 
 As we can see from the diagram above, the following 3 classes are subclasses of the *DataFile* class, which is an abstract class.
 * *DataFileReader*
@@ -509,15 +515,9 @@ As we can see from the diagram above, the following 3 classes are subclasses of 
   * Depending on the option stated by you, this feature can either delete a single file or all
     XML files currently stored in the user directory.
 
-<a id="file-writer"></a>
-## 4.2.6.1 Overview<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
-
-Whenever you give a command to *add* or *edit* a cheatsheet, this feature will be activated. Through this
-feature, CheatLogs will attempt to update all cheatsheet files, creating a new cheat sheet file if a new 
-cheat sheet is created. To ensure that your cheat sheet files
 
 <a id="file-writer-design"></a>
-#### 4.2.6.2 Writing files<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+#### 4.2.6.1 Writing files<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
 Whenever you give a command to *add* or *edit* a cheatsheet, this feature will be activated. Through this
 feature, CheatLogs will attempt to update all cheatsheet files, creating a new cheat sheet file if a new 
@@ -559,14 +559,31 @@ The command can execute at a random time later via `commandObj.execute()`.
 
 <a id="editing-feature"></a>
 ## 5.2. Editing Feauture<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+![ContentEditor](https://i.ibb.co/hYtY1GM/Screenshot-2020-11-09-at-6-30-12-PM.png)
 
-The editing feature is enabled using a simple text editor that uses a graphical user interface. 
+The editing feature is enabled using a simple text editor that uses the JSwing Library. 
 The strong reason that we wanted to use a GUI is that it offers more flexibility and editing power for the user rather than just using command-line editing methods.
 
+The editing feature is handled by the Editor class. The Text Editor inherits from JFrame and implements the Action Listener class. 
+The text editor is instantiated when the the user session is constructed.
+The text editor remains opened throughtout the program execution, but it is hidden.
+The text editor is shwon only when the AddCommand or the EditCommand is instantiated.
 
-The editing feature is handled by the TextEditor class. The Text Editor inherits from JFrame and implements the Action Listener class. 
-The text editor is instantiated when the edit command is invoked. 
+The text editor uses the Box Layout that divide the text editor into 5 sections, header,footer, left, right, and center.
+Each of the sections, are implemented using JPanel.
 
+* The header Panel contains the CheatLogs logo that is implemented using JLabel that contains an ImageIcon object.
+
+* The center panel is filled with the text editor, which is implemented using the JTextArea and JScrollPane. 
+Using both of those classes, the user can input any text into the text editor, except for escape characters.
+The text editor will have the horizontal and vertical scroll pane as needed, especially when loading long texts.
+
+* The right panel contains the buttons that is used for the editing and file functions, that include Copy, Cut, Paste, Clear All, Cancel, and Save.
+The buttons are created using the JButton class, and in each of the buttons there is an ActionListener to invoke actions to be processed by the editor.
+
+* The footer contains a JLabel that will display warning and the information of the CheatSheet that is being edited.
+
+Every time a button is pressed, the ActionEvent will be processed by the actionPerformed class, and a switch statement will control the actions and command executions.
 
 <a id="sorting-feature"></a>
 ## 5.3. Sorting Feature<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
@@ -598,7 +615,7 @@ By using the sort() method present in `java.util. Collections` class, we would h
 This feature stores cheat sheets on the hard-drive in the form of XML file. 
 When the application loads, data from these files will be converted and loaded into the application.
 
-<a id="file-writer"></a>
+<a id="impln-file-writer"></a>
 ### 5.4.1 Writing files<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
 Whenever you give a command to *add* or *edit* a cheatsheet, this feature will be activated. Through this
@@ -608,7 +625,7 @@ in a subdirectory whose name matches the subject name of each cheatsheets.
 
 The sequence diagram below illustrates the general process when writing files to the */data* directory.
 
-[!Image](https://i.ibb.co/k2ZPZTN/file-Writer.png)
+![Image](https://i.ibb.co/k2ZPZTN/file-Writer.png)
 
 From the sequence diagram above, the *DataWriter* class invokes a number of methods when the
 *executeFunction* class is called. First, it obtains a list of all the cheatsheets present
@@ -616,17 +633,17 @@ in CheatLogs from *CheatSheetList*. Next, it iterates through each cheatsheet, a
 them as XML files by invoking the *storeCheatSheet()* command. Finally, it will call its own *saveSettings()*
 command, where it will store the user-defined settings into *settings.txt*.
 
-<a id="file-reader"></a>
+<a id="impln-file-reader"></a>
 ### 5.4.2 Reading files<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
-When CheatLogs is launched, this feature looks through the directories present in the /data directory
+When CheatLogs is launched, this feature looks through the directories present in the */data* directory
 recursively to find XML files that can be converted to cheatsheets. After verifying that the XML file has
 the relevant attributes and does not contain any non-alphanumeric characters, the Java DOM parser 
 converts these files into cheatsheets and adds them to the list.
 
 The sequence diagram below illustrates the general process when reading preloaded cheatsheets from CheatLogs.jar.
 
-[!Image](https://i.ibb.co/F36bKhr/preloaded-Extract.png)
+![!Image](https://i.ibb.co/F36bKhr/preloaded-Extract.png)
 
 From the diagram above, when the *extractPreloadedCheatSheets()* method is called, *DataFileReader* calls a 
 few methods in order to execute this method. First, it creates a new JarFile object by calling its constructor,
@@ -638,7 +655,7 @@ it is not required anymore.
 
 The sequence diagram below illustrates the general process when reading files from the */data* directory. 
 
-[!Image](https://i.ibb.co/2shSvBS/file-Reader.png)
+![!Image](https://i.ibb.co/2shSvBS/file-Reader.png)
 
 As you can see in the diagram above, when the *executeFunction()* method is called, *DataFileReader* invokes
 a number of methods in order to complete this operation. First, it iterates through every directory
@@ -649,14 +666,14 @@ out of it by invoking the method *createNewCheatSheet()*. However, if the file i
 will now inoke *loadUserSettings()* to transfer the data stored within it to configure the respective settings
 of CheatLogs.
 
-<a id="file-destroyer"></a>
+<a id="impln-file-destroyer"></a>
 ### 5.4.3 Deleting files<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
 When you decide to remove a cheat sheet, CheatLogs will delete the relevant cheat sheet files immediately.
 This is done by locating the path of the XML file corresponding to the cheat sheet. Subsequently, this feature
 will delete it provided that the XML file still exists. After deleting a file, this feature performs a recursive
 search through the data directory, to delete any directories that are empty after this operation. This ensures
-that there is no clutter of empty folders existing in the /data directory. 
+that there is no clutter of empty folders existing in the */data* directory. 
 
 Currently, CheatLogs provides two options to remove XML files, which are listed below.
 
@@ -667,7 +684,7 @@ Currently, CheatLogs provides two options to remove XML files, which are listed 
 
 The sequence diagram below illustrates the general process when deleting a single file.
 
-[!Image](https://i.ibb.co/JRj5F1n/destroyer-Single.png)
+![!Image](https://i.ibb.co/JRj5F1n/destroyer-Single.png)
 
 As you can see in the diagram above, when the *executeFunction(String)* method is called, *DataFileDestroyer*
 self invokes 2 methods to implement this function. The first function is *deleteFile(String)*, where the XML file
@@ -678,7 +695,7 @@ within the */data* folder.
 
 The sequence diagram below illustrates the general process when clearing all files.
 
-[!Image](https://i.ibb.co/58r7BcR/destroyer-Full.png)
+![!Image](https://i.ibb.co/58r7BcR/destroyer-Full.png)
 
 As you can see in the diagram above, when the *executeFunction()* method is called, *DataFileDestroyer*
 invokes a number of methods in order to complete this operation. First, it iterates through every
@@ -891,9 +908,18 @@ This project allows you to create multiple releases of CheatLogs. Follow these s
 <br>
 
 <a id="product-scope-appendix"></a>
+
 ## 10.1 Product scope<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
-
-
+### Target User Profile
+    * has a need to manage cheatsheets
+    * beginner to programming
+    * prefers simple and easily legible version of official documentation
+    * preferes a small and light application
+    * proficient enough in navigating CLI
+#### Value Proposition
+    * Allows beginner programmer to learn faster without having to navigate through official documentation.
+    * Manage cheatsheets in a single unified application rather than navigating a messy file system.
+=======
 
 <a id="user-stories"></a>
 ## 10.2 User stories<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
@@ -919,8 +945,248 @@ versions of CheatLogs was designed to solve.
 
 <a id="use-cases"></a>
 ## 10.3 Use cases<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+### 10.3.1 Use Case: Add CheatSheet
+#### MSS
 
+1. User request to add a cheatsheet
+2. CheatLogs requests for name and subject
+3. User provides name and subject
+4. CheatLogs displays text editor
+5. User fills in the content of the cheatsheet
+6. User clicks `Save` button
+7. CheatLogs adds cheatsheet.
 
+   *Use case ends.*
+#### Extensions
+**3a. User doesnt provide name and index**
+
+*3a.1. Use case resumes at step 2.*
+        
+**3b. User provides an existing cheatsheet name**
+
+3b.1. CheatLogs shows an error message.
+
+*Use case ends*
+
+**3c. User provides name / character above 250 characters**
+
+3c.1. CheatLogs shows an error message.
+
+*Use case ends*
+
+**6a. User clicks cancel Button** 
+
+6a.1. CheatSheet will not be created.
+    
+*Use case ends.*
+    
+**6b.** User clicks save when text editor is empty
+
+6b.1. The footer will show warning of a blank file to the User.
+
+*Use case resumes at step 5*
+
+### 10.3.2 Use Case: Edit CheatSheet
+#### MSS
+
+1. User request to edit a cheatsheet
+2. CheatLogs requests for name and index
+3. User provides name and index
+4. CheatLogs displays text editor with the cheatsheet content
+5. User fills in the content of the cheatsheet
+6. User clicks `Save` button
+7. CheatLogs edits the cheatsheet content.
+
+   *Use case ends.*
+#### Extensions
+**3a. User doesnt provide name and index**
+
+*3a.1. Use case resumes at step 2.*
+       
+**3b. User provides mismatching name and index**
+
+3b.1. CheatLogs will display error message
+
+*Use case ends*
+
+**3c. User provides non-existing cheatsheet**
+
+3c.1. CheatLogs will display error message
+
+*Use case ends*
+        
+**6a. User clicks cancel Button** 
+
+6a.1. CheatSheet changes will not be saved.
+    
+*Use case ends.*
+    
+**6b.** User clicks save when text editor is empty
+
+6b.1. The footer will show warning of a blank file to the User.
+
+*6b.2. Use case resumes at 5*
+
+### 10.3.3 Use Case: Delete CheatSheet
+#### MSS
+
+1. User request to delete a cheatsheet
+2. CheatLogs requests for name and index
+3. User provides name and index
+4. CheatLogs requests user confirmation
+5. User provides confirmation
+6. Cheatsheet is deleted
+
+   *Use case ends.*
+#### Extensions
+**3a. User doesnt provide name and index**
+
+*3a.1. Use case resumes at step 2.*
+
+**3b. User provides mismatching name and index**
+
+3b.1. CheatLogs will display error message
+
+*Use case ends*
+
+**3c. User provides non-existing cheatsheet**
+
+3c.1. CheatLogs will display error message
+
+*Use case ends*
+
+**4a. User provides wrong confirmation**
+
+4a.1. CheatLogs will not delete the cheatsheet
+
+*Use case ends*
+
+### 10.3.4 Use Case: Clear CheatSheet
+#### MSS
+
+1. User request to clear the cheatsheet list
+2. CheatLogs requests user confirmation
+3. User provides confirmation
+4. All user-made cheatsheet is deleted
+
+   *Use case ends.*
+#### Extensions
+**3a. User provides wrong confirmation key**
+    
+*3a.1. Use case returns to step 1*
+
+### 10.3.5 Use Case: Favorite CheatSheet
+#### MSS
+
+1. User request to favourite a cheatsheet
+2. CheatLogs requests for name and index
+3. User provides name or index
+4. CheatLogs favourites the CheatSheet.
+
+   *Use case ends.*
+#### Extensions
+**3a. User doesnt provide name and index**
+
+*3a.1. Use case resumes at step 2.*
+
+**3b. User provides mismatching name and index**
+
+3b.1. CheatLogs will display error message
+
+*Use case ends*
+
+**3c. User provides non-existing cheatsheet**
+
+3c.1. CheatLogs will display error message
+
+*Use case ends*
+        
+**3d. User provides already favourited cheatsheet**
+
+3d.1. CheatLogs will display the already favourited cheatsheet
+
+*Use case ends*
+
+### 10.3.6 Use Case: Find CheatSheet
+#### MSS
+
+1. User request to find a cheatsheet
+2. CheatLogs requests for name, index, or section keyword
+3. User provides name and index
+4. Cheatsheet is viewed
+
+   *Use case ends.*
+#### Extensions
+**3a. User doesnt provide name, index, or section keyword**
+
+*3a.1. Use case resumes at step 2.*
+
+**3b. User provides mismatching name and index**
+
+3b.1. CheatLogs will display error message
+
+*Use case ends*
+
+**3c. User provides non-existing cheatsheet attributes**
+
+3c.1. CheatLogs will display error message
+
+*Use case ends*
+
+### 10.3.7 Use Case: View CheatSheet
+#### MSS
+
+1. User request to find a cheatsheet
+2. CheatLogs requests for name or index
+3. User provides name and index
+4. Cheatsheet is viewed
+
+   *Use case ends.*
+#### Extensions
+**3a. User doesn't provide name and index**
+
+*3a.1. Use case resumes at step 2.*
+
+**3b. User provides mismatching name and index**
+
+3b.1. CheatLogs will display error message
+
+*Use case ends*
+
+**3c. User provides non-existing cheatsheet attributes**
+
+3c.1. CheatLogs will display error message.
+
+*Use case ends*
+
+### 10.3.8 Use Case: List CheatSheet
+#### MSS
+
+1. User request to list the cheatsheet
+2. User provides the cheat sheet list
+3. Cheatsheet is listed
+
+   *Use case ends.*
+#### Extensions
+**3a. The user request change sorting order**
+
+3a.1. CheatLogs will change sorting order
+
+*Use case resumes at Step 3*
+
+**3b. The user inputs invalid argument**
+
+3b.1. CheatLogs will exit the list command
+
+*Use case ends*
+
+### 10.3.9 Use Case: Exit Program
+#### MSS
+
+1. User request to exit the program.
+2. Cheatlogs terminates.
+
+   *Use case ends.*
 
 <a id="non-functional-requirements"></a>
 ## 10.4 Non-Functional Requirements<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
@@ -934,21 +1200,156 @@ versions of CheatLogs was designed to solve.
 
 <a id="appendix-instructions-for-manual-testing"></a>
 # 11. Appendix: Instructions for manual testing<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
+<a id="manual-test-1"></a>
+## 11.1 Start-up with preloaded data and restart with save data
+1. Initial launch
+    1. Download the latest release of CheatLogs from [here](https://github.com/AY2021S1-CS2113T-W11-3/tp/releases)
+    1. Move the jar file to an empty folder
+    1. Open Command Prompt/Terminal
+    1. Move the directory containing the jar file
+    1. Invoke `java -jar CheatLogs.jar FIRST`
+    
+    Expected output: 
+    Shows the welcome message of CheatLogs
+    ![](https://i.ibb.co/c14qrXf/image.png)
+2. List the preloaded cheatsheets
+    2. Prerequisites: Still in the same session as Step 1
+    2. Test case: `/list`
+    
+    Expected output:
+    Prints a table containing **12** cheatsheets, prompts the user to sort the result.
+    Press any characters excluding 1 - 4 to exit the sorting mode 
+3. Exit and restart the application
+    3. Prerequisites: Still in the same session as Step 2
+    3. Test case: 
+        - `/exit`
+        - `java -jar CheatLogs.jar`
+        - `/list`
+    
+    Expected output:
+    Identical to Step 2 (List the preloaded cheatsheets)
 
-{Give instructions on how to do a manual product testing e.g., how to load sample data to be used for testing}
+<a id="manual-test-2"></a>
+## 11.2 Adding cheatsheets
+1. Adding cheatsheets using **easy mode**
+    1. Test case: `/add` - Expected output: Prompts the user to fill `NAME` and `SUBJECT`
+    1. Test case: `dummyName0`
+    1. Test case: `dummySubject0` - Expected output: A text editor pops up
+    1. Test case: `dummyDescription0`, then click `save`
+    
+    Expected output:
+    Successfully adds the new cheatsheet, prints the current number of cheatsheets
 
-<!---
-There are few major components inside the code, and those components are broken down into separate classes. 
-All components can be accessed from the CheatLogs class.
-### CheatSheetList
-All cheatsheets are stored inside a static class CheatSheetList to allow other classes to easily access and write data to the list.
--->
+2. Adding cheatsheets using **advanced mode**
+    2. Test case: `/add /n dummyName1 /s dummySubject1` - Expected output: A text editor pops up
+    2. Test case: `dummyDescription1`, then click `save`
+    
+    Expected output:
+    Successfully adds the new cheatsheet, prints the current number of cheatsheets
+    
+<a id="manual-test-3"></a>
+## 11.3 Editing cheatsheets
+1. Editing cheatsheets by name
+    1. Prerequisites: List all cheatsheets using the `/list` command, non-empty list.
+    1. Test case: `/edit /n dummyName0` - Expected output: A text editor pops up
+    1. Test case: `dummyDescription0edit`, then click `save`
+    
+    Expected output:
+    Successfully saves the new cheatsheet. Prints the name, subject, and description of the cheatsheet
 
-<br>
+2. Editing cheatsheets by index
+    2. Prerequisites: List all cheatsheets using the `/list` command, non-empty list.
+    2. Test case: `/edit /i 1` - Expected output: A text editor pops up
+    2. Test case: `dummyDescription1edit`, then click `save`
+     
+    Expected output:
+    Successfully saves the new cheatsheet. Prints the name, subject, and description of the cheatsheet
 
+<a id="manual-test-4"></a>
+## 11.4 Viewing cheatsheets
+1. Viewing cheatsheets by name
+    1. Prerequisites: List all cheatsheets using the `/list` command, non-empty list.
+    1. Test case: `/view /n arrays` 
+    
+    Expected output:
+    Prints the name, subject, and description of the cheatsheet if a cheatsheet named `arrays` exists, else prints **"Please enter a valid name"**
+
+2. Viewing cheatsheets by index
+    2. Prerequisites: List all cheatsheets using the `/list` command, non-empty list.
+    2. Test case: `/view /i 1`
+     
+    Expected output:
+    Prints the name, subject, and description of the cheatsheet
+
+<a id="manual-test-5"></a>
+## 11.5 Finding cheatsheets
+1. Finding cheatsheets by subject
+    1. Prerequisites: Non-empty cheatsheet list.
+    1. Test case: `/find /s C` 
+    
+    Expected output:
+    Prints a table containing cheatsheets with **C** as its subject, prompts the user to sort the result.
+    Press any characters excluding 1 - 4 to exit the sorting mode 
+2. Viewing cheatsheets by keyword
+    2. Prerequisites: Non-empty cheatsheet list.
+    2. Test case: `/find /k arrays`
+     
+    Expected output:
+    Prints a table containing cheatsheets which has **"arrays"** keyword in its description, prompts the user to sort the result.
+    Press any characters excluding 1 - 4 to exit the sorting mode     
+3. Viewing cheatsheets by subject and keyword
+    3. Prerequisites: Non-empty cheatsheet list.
+    3. Test case: `/find /s C /k arrays`
+     
+    Expected output:
+    Prints a table containing cheatsheets with **C** as its subject and contains **"arrays"** keyword in its description, prompts the user to sort the result.
+    Press any characters excluding 1 - 4 to exit the sorting mode 
+
+<a id="manual-test-6"></a>
+## 11.6 Deleting cheatsheets
+1. Deleting cheatsheets by name
+    1. Prerequisites: List all cheatsheets using the `/list` command, non-empty list.
+    1. Test case: `/delete /n arrays` - Expected output: Asks the user for confirmation. If the cheatsheet does not exist in the first place, prints "Please enter a valid name".
+    1. Test case: `/list`
+    
+    Expected output:
+    The cheatsheet with name "arrays" is removed from the list.  
+2. Deleting cheatsheets by index
+    2. Prerequisites: List all cheatsheets using the `/list` command, non-empty list.
+    2. Test case: `/delete /i 1`- Expected output: Asks the user for confirmation.
+    2. Test case: `/list`
+    
+    Expected output:
+    The cheatsheet with index 1 is removed from the list.  
+ 
+<a id="manual-test-7"></a>    
+## 11.7 Clearing cheatsheets
+1. Clearing all cheatsheets
+    1. Test case: `/clear` - Expected output: Asks the user for confirmation
+    1. Test case: `/list`
+    
+    Expected output:
+    No cheatsheet on the list
+
+<a id="manual-test-8"></a>
+## 11.8 Add/remove cheatsheets to favourites
+1. Adding cheatsheets to favourites
+    1. Prerequisites: List all cheatsheets using the `/list` command, non-empty list.
+    1. Test case: `/fav /i 3` 
+    1. Test case: `/list`
+    
+    Expected output:
+    The cheatsheet with index 3 is now printed on the top of the list, with a \[\*\] next to its name.  
+2. Removing cheatsheets from favourites
+    2. Prerequisites: List all cheatsheets using the `/list` command, non-empty list, at least one cheatsheet marked as favourite.
+    2. Test case: `/fav /i 1 /d`
+    2. Test case: `/list`
+    
+    Expected output:
+    The cheatsheet with index 1 does not have \[\*\] next to its name anymore.  
+    
 <a id="glossary"></a>
 # 12. Glossary<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 * *glossary item* - Definition
 
 <br>
-
