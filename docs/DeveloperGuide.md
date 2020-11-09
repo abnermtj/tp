@@ -1,5 +1,6 @@
 
 
+
 <h1 align="center">  CheatLogs Developer Guide </h1>
 
 
@@ -194,22 +195,22 @@ This component handles interactions with the user. These interactions include pr
 <a id="user-sesh"></a>
 ####  4.2.1.1 UserSession<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
-One of the classes is UserSession which contains the main loop of the program. Below is the class in UML.
+One of the classes is `UserSession` which contains the main loop of the program. Below is the class in UML.
 ![usersessionclass](https://i.ibb.co/C9s21vk/usersessionclass.png)
 Image 3: User Session class fields and methods 
 
-The constructor of this class calls the constructors of the required objects used by CheatLogs. Method calls from these objects are later called in the `start()` method.
+The constructor of this class calls the constructors of the required objects used by **CheatLogs**. Method calls from these objects are later called in the `start()` method.
  
-The main loop of the program is in `runProgramSequence()`. Every loop it reads and parses user input, which is then used to create a executable Command object which encapsulates all the necessary information needed to execute the command. 
-After execution, it handles potential exceptions thrown. Lastly it saves the file between every command.
+The main loop of the program is in `runProgramSequence()`. Every loop it reads and parses user input, which is then used to create an executable `Command` object which encapsulates all the necessary information needed to execute the command. 
+After execution, it handles potential exceptions thrown. Lastly, it saves the file between every command.
 
 When exiting the program, the `exit` command ensures all objects that require manual closing are closed.
 
-Below is a sequence diagram of the events occuring in a valid command.
+Below is a sequence diagram of the events occurring in a valid command.
 
 ![User-Session](https://i.ibb.co/ryM7jR4/User-Session.png)
 
-A single instance of common objects are usually created in `UserSession`, such as `Ui` and `Printer` objects. 
+A single instance of common objects is usually created in `UserSession`, such as `Ui` and `Printer` objects. 
 These common objects are injected into other objects that need them via the class constructor instead of static methods.
 The `Ui` and `Printer` helper classes which provide an organized way to read and write data. 
 
@@ -548,11 +549,12 @@ This section describes some noteworthy details on how certain features are imple
 <a id="parsing-of-data-to-construct-commands"></a>
 ## 5.1. Parsing of Data to Construct Commands<font size="5"> [:arrow_up_small:](#table-of-contents)</font>
 
-The current implmentation to construct commands begins with the user input, which is taken in by ` ui.getUserInput()`.  The `Parser` then parser this through `Parser.parse()` which will contruct the command based on the user input and provide the command which everything it needs to execute.
 
-Parser first derives the kind of command being executed, which is always the very first word typed. More important is how the  the parser parses the relevant flags. Each command has fields called  called `alternativeFlags` and `neccesaryFlags`. `alterntiveFlags` have an "at least one property" which means that at least one of these flags needs to be filled for the command to execute. `neccesaryFlags` require all of the flags need to be filled for the command to execute. Parser references these two fields two know if the flags inputted are required by the command itself. It also uses this information to know which flags are missing. These flags are then stored in a `LinkedHashMap<CommandFlag, String>` in the command itself where the flag itself is the key and the information associated with it is the value.
+The current implementation to construct commands begins with the user input, which is taken in by ` ui.getUserInput()`.  The `Parser` then parser this through `Parser.parse()` which will construct the command based on the user input and provide the command which everything it needs to execute.
 
-The command can execute at a random time later via commandObj.execute().
+`Parser` first derives the kind of command being executed, which is always the very first word typed. More important is how the parser parses the relevant flags. Each command has fields called `alternativeFlags` and `neccesaryFlags`. `alternativeFlags` have an "at least one property" which means that at least one of these flags needs to be filled for the command to execute. `neccesaryFlags` require all of the flags need to be filled for the command to execute. Parser references these two fields two know if the flags inputted are required by the command itself. It also uses this information to know which flags are missing. These flags are then stored in a `LinkedHashMap<CommandFlag, String>` in the command itself where the flag itself is the key, and the information associated with it is the value.
+
+The command can execute at a random time later via `commandObj.execute()`.
 
 
 <a id="editing-feature"></a>
